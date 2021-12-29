@@ -5,8 +5,8 @@ const cursor = {
 }
 
 window.addEventListener('mousemove', (event) => {
-    cursor.x = event.clientX / sizes.width - 0.5
-    cursor.y = event.clientY / sizes.height - 0.5
+    cursor.x = event.clientX / window.innerWidth - 0.5;
+    cursor.y = -(event.clientY / window.innerHeight - 0.5);
 
     console.log(cursor.x, cursor.y)
 })
@@ -59,9 +59,6 @@ function animate() {
     moon.rotation.z += 0.01;
     group.rotation.y += 0.005;
 
-
-
-
     //Om te voorkomen dat de website niet te traag of niet te snel reageerd, stellen we onze waarde gelijk aan de tijd m.b.v THREE.Clock()
 
     /*
@@ -74,7 +71,8 @@ function animate() {
     //camera updates
     camera.position.x = cursor.x * 5
     camera.position.y = cursor.y * 5
-    camera.lookAt(earth.position)
+
+
 
     renderer.render(scene, camera);
 };
