@@ -1,3 +1,6 @@
+// Canvas
+const canvas = document.querySelector('canvas.hemel')
+
 // Cursor
 const cursor = {
     x: 0,
@@ -11,7 +14,6 @@ window.addEventListener('mousemove', (event) => {
     console.log(cursor.x, cursor.y)
 })
 
-
 //scene
 const scene = new THREE.Scene();
 
@@ -23,7 +25,7 @@ loader.load('img/hemel.jpg', function(texture) {
 
 //camera
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 50;
+camera.position.z = 5;
 
 //group
 const group = new THREE.Group();
@@ -31,9 +33,11 @@ scene.add(group);
 
 //mesh
 const earth = new THREE.Mesh(
-    new THREE.SphereGeometry(4, 32, 16),
+    new THREE.SphereGeometry(3, 32, 16),
     new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('img/earth.jpg') }))
 scene.add(earth);
+
+
 
 const moon = new THREE.Mesh(
     new THREE.SphereGeometry(1, 32, 16),
@@ -43,35 +47,46 @@ scene.add(moon);
 group.add(moon);
 
 //renderer
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+    canvas: canvas
+})
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
 const clock = new THREE.Clock()
 
 function animate() {
-    requestAnimationFrame(animate);
+    window.requestAnimationFrame(animate);
 
     // de code hieronder niet gebruiken, omdat dit te maken heeft met fps(frame per second). 
     // de objecten van dit website gaan sneller draaien als de Computer een hoge fps heeft en draaien trager als de computer een lage fps heeft.
 
-    earth.rotation.y -= 0.001;
-    moon.rotation.z += 0.01;
-    group.rotation.y += 0.005;
+    /* earth.rotation.y -= 0.001;
+     moon.rotation.z += 0.01;
+     group.rotation.y += 0.005;*/
 
     //Om te voorkomen dat de website niet te traag of niet te snel reageerd, stellen we onze waarde gelijk aan de tijd m.b.v THREE.Clock()
 
-    /*
+
     const elapsedTime = clock.getElapsedTime()
 
-    earth.rotation.y -= elapsedTime / Math.PI / 100;
-    moon.rotation.z += elapsedTime / Math.PI / 100;
-    group.rotation.y += elapsedTime / Math.PI / 200; */
+    earth.rotation.y = elapsedTime / Math.PI / 2;
+    moon.rotation.z = elapsedTime / Math.PI / 2;
+    group.rotation.y = elapsedTime / Math.PI / 4;
 
     //camera updates
-    camera.position.x = cursor.x * 5
-    camera.position.y = cursor.y * 5
+    // sin(x) + cos (x) = 1 (dus 1 hele cirkel) 
+    //Math.PI *2 = 360 grade. 
+    //* 50 is voor de afstand tussen de camera en de object
+    camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 50
+    camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 50
+    camera.position.y = cursor.y * 50
+    camera.lookAt(earth.position)
 
+
+
+    /*camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 2
+    camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 2
+    camera.position.y = cursor.y * 3
+    camera.lookAt(earth.position)*/
 
 
     renderer.render(scene, camera);
